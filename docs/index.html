@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comida di Buteco – Mapa dos Bares</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <main>
+    <h1>🍻 Comida di Buteco – Mapa e Bares</h1>
+    <div class="controls">
+      <select id="cidade-select"></select>
+      <input type="text" id="search" placeholder="Buscar por bairro..." />
+    </div>
+    <div id="breadcrumb"></div>
+    <div id="contador"></div>
+    <div id="map"></div>
+    <div id="cards"></div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
