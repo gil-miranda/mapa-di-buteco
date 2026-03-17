@@ -23,12 +23,23 @@ body.dark {
 }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   margin: 0;
   padding: 1.5rem 1rem;
   background: radial-gradient(circle at top, #f3f4ff 0, var(--bg) 60%);
   color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+body.dark {
+  background: radial-gradient(circle at top, #1a1f3a 0, var(--bg) 60%);
 }
 
 main {
@@ -53,14 +64,17 @@ h1 {
   cursor: pointer;
   font-size: 0.9rem;
   line-height: 1;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
 }
 
 #theme-toggle:hover {
   background-color: var(--accent-hover);
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .controls {
@@ -89,13 +103,16 @@ input {
   cursor: pointer;
   flex: 0 0 auto;
   white-space: nowrap;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
 }
 
 #nearby-btn:hover {
   background-color: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 #breadcrumb {
@@ -142,13 +159,15 @@ input {
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 #cards .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card h2 {
