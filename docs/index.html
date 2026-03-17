@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Comida di Buteco – Mapa dos Bares</title>
+  <title>Comida di Buteco – Mapa dos Bares 2026 (Rio de Janeiro)</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -11,10 +11,18 @@
 </head>
 <body>
   <main>
-    <h1>🍻 Comida di Buteco – Mapa e Bares</h1>
+    <h1>
+      🍻 Comida di Buteco – Mapa e Bares 2026 (Rio de Janeiro)
+      <button id="theme-toggle" type="button" aria-label="Alternar tema">🌙</button>
+    </h1>
+    <p style="margin-bottom: 0.75rem; font-size: 0.9rem; opacity: 0.8;">
+      Esta é a versão atualizada com os bares de 2026 do Rio de Janeiro. Para ver a versão de 2025 com outras cidades, acesse a
+      <a href="./v1/index.html">versão anterior</a>.
+    </p>
     <div class="controls">
-      <select id="cidade-select"></select>
-      <input type="text" id="search" placeholder="Buscar por bairro..." />
+      <input type="text" id="search" placeholder="Buscar por bar, prato, bairro ou endereço..." />
+      <input type="text" id="address" placeholder="Digite seu endereço para achar os bares mais próximos" />
+      <button id="nearby-btn" type="button">Encontrar bares próximos</button>
     </div>
     <div id="breadcrumb"></div>
     <div id="contador"></div>
@@ -24,3 +32,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

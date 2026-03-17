@@ -1,6 +1,7 @@
 :root {
   --bg: #fdfdfd;
   --text: #222;
+  --muted: #555;
   --accent: #d48c00;
   --accent-hover: #c67c00;
   --card-bg: #fff;
@@ -9,12 +10,25 @@
   --active-text: #fff;
 }
 
+body.dark {
+  --bg: #050711;
+  --text: #f7f7ff;
+  --muted: #a3a6c2;
+  --accent: #ffb347;
+  --accent-hover: #ff9f1c;
+  --card-bg: #101322;
+  --border: #30344a;
+  --active-bg: #f7f7ff;
+  --active-text: #050711;
+}
+
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
-  padding: 1rem;
-  background: var(--bg);
+  padding: 1.5rem 1rem;
+  background: radial-gradient(circle at top, #f3f4ff 0, var(--bg) 60%);
   color: var(--text);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 main {
@@ -25,21 +39,63 @@ main {
 h1 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#theme-toggle {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#theme-toggle:hover {
+  background-color: var(--accent-hover);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .controls {
   display: flex;
-  gap: 1rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
   margin-bottom: 1rem;
 }
 
-select, input {
+select,
+input {
   padding: 0.6rem;
   font-size: 1rem;
   border-radius: 6px;
   border: 1px solid var(--border);
-  flex: 1;
+  flex: 1 1 220px;
+}
+
+#nearby-btn {
+  padding: 0.6rem 0.9rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#nearby-btn:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 #breadcrumb {
@@ -74,7 +130,7 @@ select, input {
 }
 
 #map {
-  height: 400px;
+  height: 520px;
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -103,7 +159,7 @@ select, input {
 
 .card p {
   margin: 0.25rem 0;
-  color: var(--text);
+  color: var(--muted);
 }
 
 .card a {
@@ -112,4 +168,16 @@ select, input {
   color: var(--accent-hover);
   font-weight: 600;
   text-decoration: none;
+}
+
+.card a:hover {
+  text-decoration: underline;
+}
+
+.card img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-top: 0.5rem;
 }
