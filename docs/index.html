@@ -3,34 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Comida di Buteco – Mapa dos Bares 2026 (Rio de Janeiro)</title>
+  <meta name="description" content="Descubra os 107 bares participantes do Comida di Buteco 2026 no Rio de Janeiro. Explore no mapa, filtre por bairro e encontre os mais próximos de você."/>
+  <title>Comida di Buteco 2026 – Mapa dos Bares do Rio de Janeiro</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
-  <main>
-    <h1>
-      🍻 Comida di Buteco – Mapa e Bares 2026 (Rio de Janeiro)
-      <button id="theme-toggle" type="button" aria-label="Alternar tema">🌙</button>
-    </h1>
-    <p style="margin-bottom: 0.75rem; font-size: 0.9rem; opacity: 0.8;">
-      Esta é a versão atualizada com os bares de 2026 do Rio de Janeiro. Para ver a versão de 2025 com outras cidades, acesse a
-      <a href="./v1/index.html">versão anterior</a>.
-    </p>
-    <div class="controls">
-      <input type="text" id="search" placeholder="Buscar por bar, prato, bairro ou endereço..." />
-      <input type="text" id="address" placeholder="Digite seu endereço para achar os bares mais próximos" />
-      <button id="nearby-btn" type="button">Encontrar bares próximos</button>
-      <button id="nearby-geoloc-btn" type="button">Usar minha localização</button>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🍺</span>
+        <div class="brand-text">
+          <span class="brand-title">Comida di Buteco</span>
+          <span class="brand-sub">Mapa dos Bares 2026 · Rio de Janeiro</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="./v1/index.html" class="link-subtle">Versão 2025 ↗</a>
+        <button id="theme-toggle" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
+      </div>
     </div>
-    <div id="breadcrumb"></div>
-    <div id="contador"></div>
-    <div id="map"></div>
-    <div id="cards"></div>
-  </main>
+  </header>
+
+  <div class="search-section">
+    <div class="search-row">
+      <div class="input-wrapper">
+        <span class="input-icon" aria-hidden="true">🔍</span>
+        <input type="search" id="search" placeholder="Buscar bar, prato ou bairro…" autocomplete="off" />
+        <button id="search-clear" class="input-clear" type="button" aria-label="Limpar busca" hidden>×</button>
+      </div>
+      <div class="input-wrapper">
+        <span class="input-icon" aria-hidden="true">📍</span>
+        <input type="text" id="address" placeholder="Endereço para achar bares próximos…" />
+      </div>
+      <div class="btn-group">
+        <button id="nearby-btn" type="button" class="btn btn-primary">Buscar próximos</button>
+        <button id="nearby-geoloc-btn" type="button" class="btn btn-secondary" aria-label="Usar minha localização">📡 Minha localização</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar" hidden>
+    <div class="stat-item">
+      <span class="stat-num" id="stat-bars">–</span>
+      <span class="stat-label">bares</span>
+    </div>
+    <div class="stat-divider" aria-hidden="true"></div>
+    <div class="stat-item">
+      <span class="stat-num" id="stat-bairros">–</span>
+      <span class="stat-label">bairros</span>
+    </div>
+    <div class="stat-divider" aria-hidden="true"></div>
+    <div class="stat-item">
+      <span class="stat-num" id="stat-photos">–</span>
+      <span class="stat-label">com foto</span>
+    </div>
+  </div>
+
+  <div class="neighborhood-section" id="neighborhood-section" hidden>
+    <span class="section-label">Bairro:</span>
+    <div id="breadcrumb" class="pills-wrap" role="group" aria-label="Filtrar por bairro"></div>
+  </div>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div id="contador" class="results-count" aria-live="polite"></div>
+      <div id="cards" class="cards-list"></div>
+    </aside>
+    <div class="map-panel">
+      <div id="map" role="application" aria-label="Mapa dos bares"></div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
-
