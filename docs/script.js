@@ -28,6 +28,17 @@ function haversineKm(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
+/** Validates that a URL uses http or https and returns it, or returns empty string. */
+function safeURL(url) {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    return (parsed.protocol === "https:" || parsed.protocol === "http:") ? url : "";
+  } catch {
+    return "";
+  }
+}
+
 function carregarDados() {
   Papa.parse("data/comida_di_buteco_rj_2026.csv", {
     download: true,
@@ -53,13 +64,15 @@ function carregarDados() {
             .map(item => {
               const key = normalizar(item.name);
               const extra = extrasByName[key] || {};
+              const lat = parseFloat(item.lat);
+              const lng = parseFloat(item.lng);
               return {
                 name: item.name,
                 address: item.address || "",
                 bairro: item.bairro || "",
                 link: item.link || "",
-                lat: item.lat ? parseFloat(item.lat) : null,
-                lng: item.lng ? parseFloat(item.lng) : null,
+                lat: Number.isFinite(lat) ? lat : null,
+                lng: Number.isFinite(lng) ? lng : null,
                 dish: extra.dish,
                 image: extra.image
               };
@@ -72,14 +85,18 @@ function carregarDados() {
         .catch(() => {
           // fallback sem prato/foto
           allData = csvRows
-            .map(item => ({
-              name: item.name,
-              address: item.address || "",
-              bairro: item.bairro || "",
-              link: item.link || "",
-              lat: item.lat ? parseFloat(item.lat) : null,
-              lng: item.lng ? parseFloat(item.lng) : null,
-            }))
+            .map(item => {
+              const lat = parseFloat(item.lat);
+              const lng = parseFloat(item.lng);
+              return {
+                name: item.name,
+                address: item.address || "",
+                bairro: item.bairro || "",
+                link: item.link || "",
+                lat: Number.isFinite(lat) ? lat : null,
+                lng: Number.isFinite(lng) ? lng : null,
+              };
+            })
             .filter((l) => l.name && l.address);
 
           gerarBreadcrumb(allData);
@@ -97,6 +114,89 @@ function carregarDados() {
       }
     },
   });
+}
+
+function buildCard(l) {
+  const el = document.createElement("div");
+  el.className = "card";
+
+  const h2 = document.createElement("h2");
+  h2.textContent = l.name;
+  el.appendChild(h2);
+
+  const addrP = document.createElement("p");
+  addrP.textContent = l.address;
+  el.appendChild(addrP);
+
+  const bairroSmall = document.createElement("small");
+  const bairroStrong = document.createElement("strong");
+  bairroStrong.textContent = "Bairro:";
+  bairroSmall.appendChild(bairroStrong);
+  bairroSmall.append(` ${l.bairro}`);
+  el.appendChild(bairroSmall);
+  el.appendChild(document.createElement("br"));
+
+  if (l.dish) {
+    const dishP = document.createElement("p");
+    const dishStrong = document.createElement("strong");
+    dishStrong.textContent = "Prato:";
+    dishP.appendChild(dishStrong);
+    dishP.append(` ${l.dish}`);
+    el.appendChild(dishP);
+  }
+
+  if (typeof l.distanceKm === "number") {
+    const distSmall = document.createElement("small");
+    const distStrong = document.createElement("strong");
+    distStrong.textContent = "Distância:";
+    distSmall.appendChild(distStrong);
+    distSmall.append(` ${l.distanceKm.toFixed(1)} km`);
+    el.appendChild(distSmall);
+    el.appendChild(document.createElement("br"));
+  }
+
+  const safeLink = safeURL(l.link);
+  if (safeLink) {
+    const a = document.createElement("a");
+    a.href = safeLink;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = "Ver no site oficial";
+    el.appendChild(a);
+  }
+
+  if (l.image) {
+    const safeImg = safeURL(l.image);
+    if (safeImg) {
+      const img = document.createElement("img");
+      img.src = safeImg;
+      img.alt = `Prato de ${l.name}`;
+      img.loading = "lazy";
+      el.appendChild(img);
+    }
+  }
+
+  return el;
+}
+
+function buildPopup(l) {
+  const div = document.createElement("div");
+  const strong = document.createElement("strong");
+  strong.textContent = l.name;
+  div.appendChild(strong);
+  div.appendChild(document.createElement("br"));
+  div.append(l.address);
+  const safeLink = safeURL(l.link);
+  if (safeLink) {
+    div.appendChild(document.createElement("br"));
+    const a = document.createElement("a");
+    a.href = safeLink;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = "Ver no site";
+    div.appendChild(a);
+  }
+  return div;
 }
 
 function renderizar(data, filtro) {
@@ -119,36 +219,12 @@ function renderizar(data, filtro) {
   const points = [];
 
   filtrados.forEach(l => {
-    const el = document.createElement("div");
-    el.className = "card";
-    const dishLine = l.dish
-      ? `<p><strong>Prato:</strong> ${l.dish}</p>`
-      : "";
-    const distanceLine =
-      typeof l.distanceKm === "number"
-        ? `<small><strong>Distância:</strong> ${l.distanceKm.toFixed(1)} km</small><br/>`
-        : "";
-    const imageBlock = l.image
-      ? `<img src="${l.image}" alt="Prato de ${l.name}" loading="lazy" />`
-      : "";
-    el.innerHTML =
-      `<h2>${l.name}</h2>` +
-      `<p>${l.address}</p>` +
-      `<small><strong>Bairro:</strong> ${l.bairro}</small><br/>` +
-      dishLine +
-      distanceLine +
-      (l.link
-        ? `<a href="${l.link}" target="_blank">Ver no site oficial</a>`
-        : "") +
-      imageBlock;
-    cards.appendChild(el);
-    if (l.lat && l.lng) {
-      const lat = parseFloat(l.lat);
-      const lng = parseFloat(l.lng);
-      const m = L.marker([lat, lng])
-        .bindPopup(`<strong>${l.name}</strong><br>${l.address}<br><a href="${l.link}" target="_blank">Ver no site</a>`);
+    cards.appendChild(buildCard(l));
+
+    if (Number.isFinite(l.lat) && Number.isFinite(l.lng)) {
+      const m = L.marker([l.lat, l.lng]).bindPopup(buildPopup(l));
       markers.addLayer(m);
-      points.push([lat, lng]);
+      points.push([l.lat, l.lng]);
     }
   });
 
@@ -215,9 +291,9 @@ async function encontrarMaisProximos() {
     }
 
     const withDistance = allData
-      .filter(b => b.lat && b.lng)
+      .filter(b => Number.isFinite(b.lat) && Number.isFinite(b.lng))
       .map(b => {
-        const d = haversineKm(latUser, lngUser, parseFloat(b.lat), parseFloat(b.lng));
+        const d = haversineKm(latUser, lngUser, b.lat, b.lng);
         return { ...b, distanceKm: d };
       })
       .sort((a, b) => a.distanceKm - b.distanceKm)
@@ -258,11 +334,8 @@ function encontrarPorLocalizacao() {
 
   contador.textContent = "⏳ Obtendo localização do dispositivo...";
 
-  console.log("geolocalização solicitada", { geolocation: navigator.geolocation });
   if (navigator.permissions) {
     navigator.permissions.query({ name: "geolocation" }).then(status => {
-      console.log("geolocalização permissão status", status.state);
-      // state pode ser granted, denied, prompt
       if (status.state === "denied") {
         contador.textContent = "⚠️ Permissão de geolocalização já foi negada no dispositivo. Verifique as configurações do Safari.";
       }
@@ -275,9 +348,9 @@ function encontrarPorLocalizacao() {
       const lngUser = position.coords.longitude;
 
       const withDistance = allData
-        .filter(b => b.lat && b.lng)
+        .filter(b => Number.isFinite(b.lat) && Number.isFinite(b.lng))
         .map(b => {
-          const d = haversineKm(latUser, lngUser, parseFloat(b.lat), parseFloat(b.lng));
+          const d = haversineKm(latUser, lngUser, b.lat, b.lng);
           return { ...b, distanceKm: d };
         })
         .sort((a, b) => a.distanceKm - b.distanceKm)
@@ -312,7 +385,6 @@ function encontrarPorLocalizacao() {
       map.setView([latUser, lngUser], 13);
     },
     error => {
-      console.log("geolocalização error", error);
       let msg = "⚠️ Não foi possível obter sua localização.";
       switch (error.code) {
         case error.PERMISSION_DENIED:

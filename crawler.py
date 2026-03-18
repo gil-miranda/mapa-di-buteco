@@ -1,8 +1,11 @@
+import logging
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import os
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 CIDADES = [
     "belem", "belo-horizonte", "blumenau", "brasilia-butecos", "campinas", "curitiba-butecos", "florianopolis",
@@ -18,6 +21,7 @@ def geocode_address(address):
         url = "https://nominatim.openstreetmap.org/search"
         params = {'q': address, 'format': 'json', 'addressdetails': 1}
         r = requests.get(url, params=params, headers=HEADERS, timeout=10)
+        r.raise_for_status()
         data = r.json()
         if data:
             result = data[0]
@@ -25,8 +29,8 @@ def geocode_address(address):
             lon = result['lon']
             bairro = result['address'].get('suburb') or result['address'].get('neighbourhood') or result['address'].get('city_district')
             return bairro, lat, lon
-    except Exception:
-        pass
+    except (requests.RequestException, ValueError, KeyError) as e:
+        logging.warning("Geocoding failed for %r: %s", address, e)
     return None, None, None
 
 def extract_data_from_city(city_slug):
