@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Comida di Buteco – Mapa dos Bares 2026 (Rio de Janeiro)</title>
+  <meta name="description" content="Mapa interativo com todos os bares participantes do Comida di Buteco 2026 no Rio de Janeiro. Encontre bares por bairro, prato ou localização." />
+  <title>Comida di Buteco 2026 – Mapa dos Bares (Rio de Janeiro)</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -11,26 +12,29 @@
 </head>
 <body>
   <main>
-    <h1>
-      🍻 Comida di Buteco – Mapa e Bares 2026 (Rio de Janeiro)
-      <button id="theme-toggle" type="button" aria-label="Alternar tema">🌙</button>
-    </h1>
-    <p style="margin-bottom: 0.75rem; font-size: 0.9rem; opacity: 0.8;">
-      Esta é a versão atualizada com os bares de 2026 do Rio de Janeiro. Para ver a versão de 2025 com outras cidades, acesse a
-      <a href="./v1/index.html">versão anterior</a>.
-    </p>
-    <div class="controls">
-      <input type="text" id="search" placeholder="Buscar por bar, prato, bairro ou endereço..." />
-      <input type="text" id="address" placeholder="Digite seu endereço para achar os bares mais próximos" />
-      <button id="nearby-btn" type="button">Encontrar bares próximos</button>
-      <button id="nearby-geoloc-btn" type="button">Usar minha localização</button>
+    <div class="site-header">
+      <h1>🍻 Comida di Buteco 2026 <span class="h1-sub">Rio de Janeiro</span></h1>
+      <button id="theme-toggle" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
     </div>
-    <div id="breadcrumb"></div>
-    <div id="contador"></div>
-    <div id="map"></div>
+    <p class="site-tagline">
+      107 bares · busque por nome, prato ou bairro · ou encontre os mais próximos de você ·
+      <a href="./v1/index.html">edição 2025</a>
+    </p>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="🔎  Buscar por bar, prato ou bairro…" autocomplete="off" />
+      <div class="address-row">
+        <input type="text" id="address" placeholder="📍  Seu endereço ou ponto de referência…" autocomplete="off" />
+        <button id="nearby-btn" type="button">Encontrar próximos</button>
+      </div>
+      <button id="nearby-geoloc-btn" type="button">📡 Usar minha localização</button>
+    </div>
+
+    <div id="breadcrumb" role="navigation" aria-label="Filtrar por bairro"></div>
+    <div id="contador" role="status" aria-live="polite"></div>
+    <div id="map" role="application" aria-label="Mapa dos bares"></div>
     <div id="cards"></div>
   </main>
   <script src="script.js"></script>
 </body>
 </html>
-

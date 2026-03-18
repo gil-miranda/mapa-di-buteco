@@ -1,202 +1,415 @@
+/* ── Design tokens ── */
 :root {
-  --bg: #fdfdfd;
-  --text: #222;
-  --muted: #555;
-  --accent: #d48c00;
-  --accent-hover: #c67c00;
-  --card-bg: #fff;
-  --border: #ccc;
-  --active-bg: #222;
-  --active-text: #fff;
+  --bg: #f7f7fb;
+  --bg-card: #ffffff;
+  --text: #1a1a2e;
+  --muted: #5c5f7a;
+  --accent: #c97a00;
+  --accent-hover: #a86300;
+  --accent-soft: rgba(201, 122, 0, 0.1);
+  --border: #e2e4ef;
+  --active-bg: #1a1a2e;
+  --active-text: #ffffff;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.07);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --radius: 10px;
 }
 
 body.dark {
-  --bg: #050711;
-  --text: #f7f7ff;
-  --muted: #a3a6c2;
+  --bg: #0d0f1e;
+  --bg-card: #14172a;
+  --text: #e8eaf6;
+  --muted: #9296b8;
   --accent: #ffb347;
   --accent-hover: #ff9f1c;
-  --card-bg: #101322;
-  --border: #30344a;
-  --active-bg: #f7f7ff;
-  --active-text: #050711;
+  --accent-soft: rgba(255, 179, 71, 0.13);
+  --border: #252843;
+  --active-bg: #e8eaf6;
+  --active-text: #0d0f1e;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
 }
 
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
-  font-family:
-    "Segoe UI",
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
-  padding: 1.5rem 1rem;
-  background: radial-gradient(circle at top, #f3f4ff 0, var(--bg) 60%);
+  padding: 1.5rem 1rem 3rem;
+  background: radial-gradient(ellipse at top, #eef0ff 0, var(--bg) 65%);
   color: var(--text);
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 body.dark {
-  background: radial-gradient(circle at top, #1a1f3a 0, var(--bg) 60%);
+  background: radial-gradient(ellipse at top, #1a1f3a 0, var(--bg) 65%);
 }
 
-main {
-  max-width: 900px;
-  margin: auto;
+main { max-width: 960px; margin: auto; }
+
+a { color: var(--accent); }
+
+/* ── Header ── */
+.site-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  font-size: 1.65rem;
+  margin: 0 0 0.15rem;
+  line-height: 1.2;
 }
 
-#theme-toggle {
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  color: var(--text);
-  padding: 0.25rem 0.6rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  line-height: 1;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease,
-    box-shadow 0.1s ease;
+.h1-sub {
+  font-weight: 400;
+  font-size: 0.7em;
+  color: var(--muted);
+  margin-left: 0.15em;
 }
 
-#theme-toggle:hover {
-  background-color: var(--accent-hover);
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.controls {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-select,
-input {
-  padding: 0.6rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  flex: 1 1 220px;
-}
-
-#nearby-btn {
-  padding: 0.6rem 0.9rem;
-  font-size: 0.95rem;
-  border-radius: 6px;
-  border: none;
-  background-color: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  flex: 0 0 auto;
-  white-space: nowrap;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease,
-    box-shadow 0.1s ease;
-}
-
-#nearby-btn:hover {
-  background-color: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-#breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1rem;
-}
-
-#breadcrumb button {
-  padding: 0.4rem 0.6rem;
-  border: none;
-  border-radius: 5px;
-  background-color: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#breadcrumb button:hover {
-  background-color: var(--accent-hover);
-}
-
-#breadcrumb button.active {
-  background-color: var(--active-bg);
-  color: var(--active-text);
-}
-
-#contador {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-#map {
-  height: 520px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-}
-
-#cards .card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-#cards .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.card h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
-  color: var(--accent);
-}
-
-.card p {
-  margin: 0.25rem 0;
+.site-tagline {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
   color: var(--muted);
 }
 
-.card a {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: var(--accent-hover);
-  font-weight: 600;
-  text-decoration: none;
+.site-tagline a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.site-tagline a:hover { text-decoration: underline; }
+
+#theme-toggle {
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.1s;
+}
+#theme-toggle:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
-.card a:hover {
-  text-decoration: underline;
+/* ── Controls ── */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.card img {
+.controls input[type="text"] {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
   width: 100%;
-  max-height: 180px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.controls input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.controls input[type="text"]::placeholder { color: var(--muted); opacity: 1; }
+
+/* Address + nearby button on one row */
+.address-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.address-row input { flex: 1; }
+
+#nearby-btn {
+  flex-shrink: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.1s;
+}
+#nearby-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+#nearby-geoloc-btn {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  font-size: 0.88rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+#nearby-geoloc-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+/* ── Breadcrumb ── */
+#breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+#breadcrumb button {
+  padding: 0.28rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+#breadcrumb button:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#breadcrumb button.active {
+  background: var(--active-bg);
+  color: var(--active-text);
+  border-color: var(--active-bg);
+  font-weight: 600;
+}
+
+/* ── Status counter ── */
+#contador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  min-height: 1.6rem;
+}
+
+/* ── Loading spinner ── */
+.spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Map ── */
+#map {
+  height: 480px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Card grid ── */
+#cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+}
+
+/* Dish image */
+.card-img-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.card-img-wrap img {
+  width: 100%;
+  height: 170px;
   object-fit: cover;
-  border-radius: 6px;
-  margin-top: 0.5rem;
+  display: block;
+  transition: transform 0.35s ease;
+}
+.card:hover .card-img-wrap img {
+  transform: scale(1.05);
+}
+
+/* Card body */
+.card-body {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.card-body h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--accent);
+  line-height: 1.25;
+}
+
+/* Dish name badge */
+.dish-badge {
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  width: fit-content;
+  border: 1px solid rgba(201, 122, 0, 0.25);
+}
+body.dark .dish-badge {
+  border-color: rgba(255, 179, 71, 0.3);
+}
+
+.card-address {
+  margin: 0;
+  font-size: 0.81rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* Tags row */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.17rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.73rem;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.distance-tag {
+  background: rgba(22, 163, 74, 0.08);
+  border-color: rgba(22, 163, 74, 0.4);
+  color: #15803d;
+  font-weight: 600;
+}
+body.dark .distance-tag {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+}
+
+.card-hours {
+  margin: 0;
+  font-size: 0.73rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Card footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+
+.card-phone {
+  font-size: 0.76rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.card-phone:hover { color: var(--accent); }
+
+.card-link {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: auto;
+  transition: color 0.15s;
+}
+.card-link:hover { color: var(--accent-hover); text-decoration: underline; }
+
+/* ── Empty state ── */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--muted);
+}
+.no-results span { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
+.no-results p { margin: 0; font-size: 1rem; }
+
+/* ── Leaflet popup ── */
+.map-popup { font-size: 0.88rem; min-width: 160px; }
+.map-popup strong { display: block; margin-bottom: 0.3rem; font-size: 0.95rem; }
+.popup-dish { font-size: 0.8rem; color: #a86300; display: block; margin-bottom: 0.25rem; }
+.map-popup p { margin: 0.15rem 0; color: #444; font-size: 0.82rem; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  body { padding: 1rem 0.75rem 2.5rem; }
+
+  .address-row { flex-direction: column; }
+  #nearby-btn { width: 100%; }
+
+  h1 { font-size: 1.3rem; }
+  #map { height: 300px; }
+  #cards { grid-template-columns: 1fr; }
 }
