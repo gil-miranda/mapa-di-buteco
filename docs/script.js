@@ -5,6 +5,7 @@ function normalizar(t) {
 let allData = [];
 let map = L.map("map").setView([-22.9068, -43.1729], 11);
 let markers = L.layerGroup().addTo(map);
+let userLocationMarker = null; // marcador de geolocalização atual
 
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
   attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
@@ -236,6 +237,7 @@ async function encontrarMaisProximos() {
 }
 
 document.getElementById("nearby-btn").addEventListener("click", encontrarMaisProximos);
+document.getElementById("nearby-geoloc-btn").addEventListener("click", encontrarPorLocalizacao);
 
 const addressInputEl = document.getElementById("address");
 if (addressInputEl) {
@@ -245,6 +247,88 @@ if (addressInputEl) {
       encontrarMaisProximos();
     }
   });
+}
+
+function encontrarPorLocalizacao() {
+  const contador = document.getElementById("contador");
+  if (!navigator.geolocation) {
+    contador.textContent = "⚠️ Geolocalização não é suportada pelo seu navegador.";
+    return;
+  }
+
+  contador.textContent = "⏳ Obtendo localização do dispositivo...";
+
+  console.log("geolocalização solicitada", { geolocation: navigator.geolocation });
+  if (navigator.permissions) {
+    navigator.permissions.query({ name: "geolocation" }).then(status => {
+      console.log("geolocalização permissão status", status.state);
+      // state pode ser granted, denied, prompt
+      if (status.state === "denied") {
+        contador.textContent = "⚠️ Permissão de geolocalização já foi negada no dispositivo. Verifique as configurações do Safari.";
+      }
+    });
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      const latUser = position.coords.latitude;
+      const lngUser = position.coords.longitude;
+
+      const withDistance = allData
+        .filter(b => b.lat && b.lng)
+        .map(b => {
+          const d = haversineKm(latUser, lngUser, parseFloat(b.lat), parseFloat(b.lng));
+          return { ...b, distanceKm: d };
+        })
+        .sort((a, b) => a.distanceKm - b.distanceKm)
+        .slice(0, 20);
+
+      if (!withDistance.length) {
+        contador.textContent = "⚠️ Não há bares com coordenadas para calcular a distância.";
+        return;
+      }
+
+      contador.textContent = `📍 Mostrando ${withDistance.length} bares mais próximos da sua localização.`;
+      renderizar(withDistance, "");
+
+      // remove marcador antigo se existir
+      if (userLocationMarker) {
+        map.removeLayer(userLocationMarker);
+        userLocationMarker = null;
+      }
+
+      // cria marcador vermelho para localização atual
+      userLocationMarker = L.circleMarker([latUser, lngUser], {
+        radius: 10,
+        color: "red",
+        fillColor: "red",
+        fillOpacity: 0.8,
+        weight: 2,
+      })
+        .bindPopup("Você está aqui")
+        .addTo(map)
+        .openPopup();
+
+      map.setView([latUser, lngUser], 13);
+    },
+    error => {
+      console.log("geolocalização error", error);
+      let msg = "⚠️ Não foi possível obter sua localização.";
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          msg = "⚠️ Permissão de geolocalização negada. Por favor permita o acesso e tente novamente.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          msg = "⚠️ Localização indisponível no momento.";
+          break;
+        case error.TIMEOUT:
+          msg = "⚠️ O tempo de resposta da localização expirou. Tente novamente.";
+          break;
+      }
+      contador.textContent = msg;
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
 }
 
 // Tema claro/escuro simples usando classe no body
