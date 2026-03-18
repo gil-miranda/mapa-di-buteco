@@ -1,9 +1,12 @@
 import json
+import logging
 import os
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
 HEADERS = {
@@ -32,7 +35,8 @@ def geocode_address(address: str) -> Optional[Tuple[float, float]]:
         lat = float(item["lat"])
         lon = float(item["lon"])
         return lat, lon
-    except Exception:
+    except (requests.RequestException, ValueError, KeyError) as e:
+        logging.warning("Geocoding failed for %r: %s", address, e)
         return None
 
 

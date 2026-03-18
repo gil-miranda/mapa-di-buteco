@@ -47,6 +47,17 @@ function carregarCSV(cidade) {
   });
 }
 
+/** Validates that a URL uses http or https and returns it, or returns empty string. */
+function safeURL(url) {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    return (parsed.protocol === "https:" || parsed.protocol === "http:") ? url : "";
+  } catch {
+    return "";
+  }
+}
+
 function renderizar(data, filtro) {
   const cards = document.getElementById("cards");
   const contador = document.getElementById("contador");
@@ -59,18 +70,66 @@ function renderizar(data, filtro) {
   filtrados.forEach(l => {
     const el = document.createElement("div");
     el.className = "card";
-    el.innerHTML = `<h2>${l.name}</h2><p>${l.address}</p><small><strong>Bairro:</strong> ${l.bairro}</small><br/>` +
-                   (l.link ? `<a href="${l.link}" target="_blank">Ver no site oficial</a>` : "");
+
+    const h2 = document.createElement("h2");
+    h2.textContent = l.name;
+    el.appendChild(h2);
+
+    const addrP = document.createElement("p");
+    addrP.textContent = l.address;
+    el.appendChild(addrP);
+
+    const bairroSmall = document.createElement("small");
+    const bairroStrong = document.createElement("strong");
+    bairroStrong.textContent = "Bairro:";
+    bairroSmall.appendChild(bairroStrong);
+    bairroSmall.append(` ${l.bairro}`);
+    el.appendChild(bairroSmall);
+    el.appendChild(document.createElement("br"));
+
+    const safeLink = safeURL(l.link);
+    if (safeLink) {
+      const a = document.createElement("a");
+      a.href = safeLink;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Ver no site oficial";
+      el.appendChild(a);
+    }
+
     cards.appendChild(el);
+
     if (l.lat && l.lng) {
-      const m = L.marker([parseFloat(l.lat), parseFloat(l.lng)])
-        .bindPopup(`<strong>${l.name}</strong><br>${l.address}<br><a href="${l.link}" target="_blank">Ver no site</a>`);
-      markers.addLayer(m);
+      const lat = parseFloat(l.lat);
+      const lng = parseFloat(l.lng);
+      if (Number.isFinite(lat) && Number.isFinite(lng)) {
+        const popupDiv = document.createElement("div");
+        const popupStrong = document.createElement("strong");
+        popupStrong.textContent = l.name;
+        popupDiv.appendChild(popupStrong);
+        popupDiv.appendChild(document.createElement("br"));
+        popupDiv.append(l.address);
+        if (safeLink) {
+          popupDiv.appendChild(document.createElement("br"));
+          const popupA = document.createElement("a");
+          popupA.href = safeLink;
+          popupA.target = "_blank";
+          popupA.rel = "noopener noreferrer";
+          popupA.textContent = "Ver no site";
+          popupDiv.appendChild(popupA);
+        }
+        const m = L.marker([lat, lng]).bindPopup(popupDiv);
+        markers.addLayer(m);
+      }
     }
   });
 
   if (filtrados.length && filtrados[0].lat && filtrados[0].lng) {
-    map.setView([parseFloat(filtrados[0].lat), parseFloat(filtrados[0].lng)], 13);
+    const lat = parseFloat(filtrados[0].lat);
+    const lng = parseFloat(filtrados[0].lng);
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+      map.setView([lat, lng], 13);
+    }
   }
 }
 
