@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Sistema — Gestão do Delivery de Salgados</title>
+<style>
+  :root{
+    --ink:#1f2430; --muted:#6b7280; --bg:#faf8f5; --card:#ffffff;
+    --brand:#7c3aed; --brand-soft:#ede9fe; --accent:#0d9488; --accent-soft:#ccfbf1;
+    --warn:#b45309; --warn-soft:#fef3c7; --line:#e5e7eb;
+    --good:#15803d; --good-soft:#dcfce7;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6;}
+  .wrap{max-width:980px; margin:0 auto; padding:48px 24px 96px;}
+  h1{font-size:2.1rem; line-height:1.2;}
+  h2{font-size:1.45rem; margin:64px 0 8px; padding-top:24px; border-top:1px solid var(--line);}
+  h3{font-size:1.05rem; margin:24px 0 8px;}
+  p{margin:10px 0; max-width:72ch;}
+  .lede{font-size:1.15rem; color:var(--muted); max-width:64ch;}
+  .kicker{color:var(--brand); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem;}
+  .tag{display:inline-block; font-size:.72rem; font-weight:700; padding:2px 10px; border-radius:999px; vertical-align:middle;}
+  .tag.v0{background:var(--brand-soft); color:var(--brand);}
+  .tag.v1{background:var(--accent-soft); color:var(--accent);}
+  .tag.v2{background:var(--warn-soft); color:var(--warn);}
+  .tag.ok{background:var(--good-soft); color:var(--good);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 22px; box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .grid{display:grid; gap:14px;}
+  .grid.c2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+  .grid.c3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+
+  /* diagrama: fluxo horizontal */
+  .flow{display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin:18px 0;}
+  .flow .node{flex:1 1 150px; min-width:150px; background:var(--card); border:1.5px solid var(--line); border-radius:12px; padding:14px; text-align:center;}
+  .flow .node b{display:block; font-size:.95rem;}
+  .flow .node span{font-size:.8rem; color:var(--muted);}
+  .flow .arrow{display:flex; align-items:center; padding:0 10px; color:var(--brand); font-size:1.4rem; font-weight:700;}
+  .node.brand{border-color:var(--brand); background:var(--brand-soft);}
+  .node.accent{border-color:var(--accent); background:var(--accent-soft);}
+  .node.plain{border-style:dashed;}
+
+  /* diagrama: dois telefones */
+  .phones{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:18px 0;}
+  .phone{border:2px solid var(--line); border-radius:18px; padding:18px; background:var(--card);}
+  .phone.biz{border-color:var(--good);}
+  .phone.sys{border-color:var(--brand);}
+  .phone h3{margin-top:0;}
+  .phone ul{margin:8px 0 0 18px; font-size:.92rem;}
+  .phone .who{font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase;}
+  .phone.biz .who{color:var(--good);}
+  .phone.sys .who{color:var(--brand);}
+
+  table{border-collapse:collapse; width:100%; font-size:.92rem; background:var(--card); border-radius:12px; overflow:hidden;}
+  th,td{padding:9px 14px; text-align:left; border-bottom:1px solid var(--line);}
+  th{background:#f3f0ea; font-size:.8rem; text-transform:uppercase; letter-spacing:.04em;}
+  td.num, th.num{text-align:right; font-variant-numeric:tabular-nums;}
+  tr.total td{font-weight:800; background:var(--brand-soft);}
+  tr.sub td{font-weight:700;}
+  .fict{font-size:.78rem; color:var(--warn); background:var(--warn-soft); display:inline-block; padding:2px 10px; border-radius:999px; margin-bottom:8px;}
+
+  .quote{border-left:4px solid var(--brand); padding:10px 18px; background:var(--brand-soft); border-radius:0 12px 12px 0; margin:14px 0; font-style:italic;}
+  .map{display:grid; grid-template-columns:1fr 24px 1fr; gap:8px 6px; align-items:center; margin:14px 0;}
+  .map .you{background:var(--brand-soft); border-radius:10px; padding:10px 14px; font-style:italic;}
+  .map .sys2{background:var(--accent-soft); border-radius:10px; padding:10px 14px;}
+  .map .arr{text-align:center; color:var(--muted); font-weight:700;}
+  .risk{border-left:4px solid var(--warn);}
+  ul.clean{margin:8px 0 8px 20px;}
+  ul.clean li{margin:6px 0;}
+  .files{font-family:ui-monospace,Menlo,monospace; font-size:.85rem;}
+  .files td:first-child{white-space:nowrap; color:var(--brand); font-weight:600;}
+  footer{margin-top:72px; color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); padding-top:16px;}
+  .big{font-size:1.5rem; font-weight:800;}
+  .center{text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Relatório do produto · 04/07/2026 · specs completas, zero código</p>
+  <h1>Um sistema que escuta como eles já trabalham<br>— e devolve um negócio enxergável.</h1>
+  <p class="lede">Dois donos, salgados todo dia, ~10 pedidos entre WhatsApp e iFood. A operação funciona; o que não existe é <b>visão</b>: quanto custa, quanto sobra, quem compra, quem sumiu. Este documento mostra o sistema inteiro, o modelo mental por trás dele, e por que ele é exatamente o que você pediu.</p>
+
+  <h2>1 · O modelo mental em uma imagem</h2>
+  <p>A tese central: <b>não pedir que dois idosos aprendam um sistema — fazer o sistema aprender com o que eles já fazem.</b> Cada gesto que já existe (mensagem no WhatsApp, nota fiscal na mão, relatório do iFood, planilha de custo da massa) vira uma fonte de dados. O esforço novo se resume a <i>encaminhar uma mensagem</i> e <i>fotografar uma nota</i>.</p>
+
+  <div class="flow">
+    <div class="node"><b>Cliente pede</b><span>WhatsApp ou iFood, como sempre</span></div>
+    <div class="arrow">→</div>
+    <div class="node brand"><b>Dono encaminha / fotografa</b><span>1 gesto: pedido, nota fiscal, "pago pix"</span></div>
+    <div class="arrow">→</div>
+    <div class="node brand"><b>IA entende e registra</b><span>itens, cliente, valores, compras</span></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>Dados viram visão</b><span>custos reais · DRE · clientes</span></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>Visão vira ação</b><span>repreçar · reconquistar · escolher canal</span></div>
+  </div>
+
+  <h3>Dois números, papéis opostos — e inegociáveis</h3>
+  <div class="phones">
+    <div class="phone biz">
+      <span class="who">Número do negócio (intocado)</span>
+      <h3>📱 O WhatsApp deles, como sempre foi</h3>
+      <ul>
+        <li>Clientes pedem aqui, humanos respondem aqui</li>
+        <li>Nenhuma automação encosta neste número → <b>zero risco de banimento</b></li>
+        <li>Mensagens de reconquista saem daqui — <b>enviadas por gente</b>, com um toque</li>
+      </ul>
+    </div>
+    <div class="phone sys">
+      <span class="who">Número do sistema (o robô)</span>
+      <h3>🤖 A porta de entrada dos dados</h3>
+      <ul>
+        <li>Recebe encaminhamentos, fotos de nota, áudios, "pago pix"</li>
+        <li>Responde só aos donos e ao Gil (lista fechada)</li>
+        <li>Confirma cada registro em uma linha — <i>"✅ Anotado: 50 coxinhas, dona Maria, sexta"</i></li>
+        <li>Entrega o resumo do mês e os alertas</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>2 · O que o sistema tem — 7 módulos, 3 fases</h2>
+  <div class="grid c2">
+    <div class="card"><span class="tag v0">v0</span> <b>M1 · Captura</b><p>O robô + OCR de nota fiscal + importação do relatório do iFood (o ritual semanal que já existe, redirecionado). Nada se perde: tudo que chega é gravado <i>antes</i> de ser interpretado.</p></div>
+    <div class="card"><span class="tag v0">v0</span> <b>M2 · Livro de pedidos</b><p>Todo pedido de todo canal num lugar só, com pagamento, entrega e — crucial — <b>de onde veio cada número</b> (a mensagem original fica guardada). Tela de conferência: sistema × caderninho × repasse iFood.</p></div>
+    <div class="card"><span class="tag v0">v0</span> <b>M4 · Compras e insumos</b><p>Foto da nota → compra registrada → <b>preço de cada ingrediente atualizado automaticamente</b>, com histórico. É daqui que os custos param de mentir.</p></div>
+    <div class="card"><span class="tag v1">v1</span> <b>M5 · Calculadora de receita</b><p>Do jeito que eles pensam: <i>massa de 3kg → rende N de cada salgado</i> + recheio + embalagem + gás + perdas = custo unitário real, sempre atualizado pelas notas. Com simulador de "e se".</p></div>
+    <div class="card"><span class="tag v1">v1</span> <b>M6 · DRE e painéis</b><p>DRE gerencial completo por mês: receita por canal, comissões, CMV, despesas, <b>resultado líquido</b>. Margem por produto e por canal. Resumo mensal chega no WhatsApp do dono, sem jargão.</p></div>
+    <div class="card"><span class="tag v2">v2</span> <b>M3 · Clientes e recorrência</b><p>Identidade pelo telefone, histórico, ticket, ciclo pessoal de compra. Segmentos: novos, recorrentes, esfriando, perdidos, VIP.</p></div>
+    <div class="card"><span class="tag v2">v2</span> <b>M7 · Ações de reconquista</b><p>Lista semanal: quem chamar, por quê, e a <b>mensagem já escrita</b> — um toque abre a conversa no número do negócio, o dono revisa e envia. Com placar: quantos voltaram, quanto renderam.</p></div>
+    <div class="card"><b>🌐 Painel web (todas as fases)</b><p>Para os donos e para o Gil: pedidos, revisão, compras, clientes, cadastros, calculadora, DRE. Letras grandes, português simples, uma ação principal por tela. Back e front <b>desacoplados</b> — o front evolui livre sobre a API estável.</p></div>
+  </div>
+
+  <h3>A ordem tem um porquê</h3>
+  <div class="flow">
+    <div class="node brand"><b>v0 · Provar a captura</b><span>2–4 semanas de piloto. Meta: ≥90% dos pedidos capturados. <b>Se falhar, paramos e repensamos</b> — sem construir castelo em areia.</span></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>v1 · Custos + DRE</b><span>o payoff financeiro sobre dados já confiáveis</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>v2 · Clientes + ações</b><span>vender mais, com meses de histórico real</span></div>
+  </div>
+
+  <h2>3 · Como fica na prática — dois retratos</h2>
+  <p class="fict">⚠️ Números 100% fictícios — só para dar forma ao que as telas mostram</p>
+
+  <div class="grid c2">
+    <div>
+      <h3>A calculadora de receita</h3>
+      <table>
+        <tr><th colspan="2">Coxinha — custo unitário</th></tr>
+        <tr><td>Massa 3kg (R$ 42,00 ÷ rende 120)</td><td class="num">R$ 0,35</td></tr>
+        <tr><td>Recheio de frango (R$ 28,00 ÷ 120)</td><td class="num">R$ 0,23</td></tr>
+        <tr><td>Embalagem</td><td class="num">R$ 0,06</td></tr>
+        <tr><td>Fritura (gás + óleo)</td><td class="num">R$ 0,08</td></tr>
+        <tr><td>Perdas (5%)</td><td class="num">R$ 0,04</td></tr>
+        <tr class="total"><td>Custo real por unidade</td><td class="num">R$ 0,76</td></tr>
+        <tr><td>Venda direta (cento a R$ 130)</td><td class="num">R$ 1,30 → margem 42%</td></tr>
+        <tr><td>Venda iFood (após comissão)</td><td class="num">R$ 1,04 → margem 27%</td></tr>
+      </table>
+      <p style="font-size:.9rem; color:var(--muted)">Quando a farinha subir na próxima nota fiscal, esta tabela se atualiza sozinha — e avisa se a margem furar o piso.</p>
+    </div>
+    <div>
+      <h3>O DRE do mês</h3>
+      <table>
+        <tr><th>Junho (ilustrativo)</th><th class="num">R$</th></tr>
+        <tr><td>(+) Receita — WhatsApp direto</td><td class="num">6.400</td></tr>
+        <tr><td>(+) Receita — iFood</td><td class="num">3.100</td></tr>
+        <tr><td>(−) Comissões iFood</td><td class="num">(710)</td></tr>
+        <tr class="sub"><td>(=) Receita líquida</td><td class="num">8.790</td></tr>
+        <tr><td>(−) CMV (custo dos salgados vendidos)</td><td class="num">(3.290)</td></tr>
+        <tr class="sub"><td>(=) Lucro bruto</td><td class="num">5.500</td></tr>
+        <tr><td>(−) Variáveis (combustível…)</td><td class="num">(380)</td></tr>
+        <tr><td>(−) Fixas (gás, luz, DAS-MEI…)</td><td class="num">(920)</td></tr>
+        <tr class="total"><td>(=) Sobrou no mês</td><td class="num">4.200</td></tr>
+      </table>
+      <p style="font-size:.9rem; color:var(--muted)">Cada linha é clicável até o centavo de origem: pedido → mensagem encaminhada; custo → nota fiscal fotografada. E o DRE sempre mostra sua própria cobertura ("94% dos itens identificados") — <b>honestidade embutida</b>.</p>
+    </div>
+  </div>
+
+  <h2>4 · Por que este sistema é o que <i>você</i> pediu</h2>
+  <p>Suas palavras, ao longo da conversa — e onde cada uma virou arquitetura:</p>
+  <div class="map">
+    <div class="you">"clear view of costs and revenue… DRE… production costs"</div><div class="arr">→</div>
+    <div class="sys2">M4+M5+M6: preços de insumo vivos (via nota), calculadora fiel ao modelo da massa, DRE gerencial completo com tudo dentro (comissão, combustível, DAS)</div>
+    <div class="you">"customers and recurrence… acquiring/retention… <b>help act</b>"</div><div class="arr">→</div>
+    <div class="sys2">M3+M7: ciclo pessoal por cliente, lista semanal de reconquista com mensagem pronta, placar de conversão — insight que termina em ação, nunca em gráfico decorativo</div>
+    <div class="you">"really caseiro… 2 old people"</div><div class="arr">→</div>
+    <div class="sys2">Captura = 1 gesto no app que eles já usam; robô que confirma tudo; painel em português simples com letra grande; no máximo <b>uma</b> pergunta por pedido</div>
+    <div class="you">"generic… things registered on a database"</div><div class="arr">→</div>
+    <div class="sys2">Regra R9 do modelo de dados: canais, produtos, preços, formas de pagamento, categorias — tudo é linha no banco, nada é constante no código</div>
+    <div class="you">"decouple back and front… easier to work with multiple agents"</div><div class="arr">→</div>
+    <div class="sys2">Dois repositórios, contrato OpenAPI congelado no meio, cliente tipado gerado — drift vira erro de build; um agente por repo, em paralelo</div>
+    <div class="you">"the most important is how we manage and store the data"</div><div class="arr">→</div>
+    <div class="sys2">O coração das specs: histórico de preços append-only, custos congelados em snapshots (o DRE de março nunca reescreve), proveniência total — todo número responde "de onde você veio?"</div>
+    <div class="you">"Railway… até uns 100 por mês"</div><div class="arr">→</div>
+    <div class="sys2">1 serviço + Postgres no Railway, front estático grátis, IA custando centavos neste volume: <b>R$ 30–60/mês</b> estimados</div>
+  </div>
+
+  <h2>5 · A parte honesta</h2>
+  <div class="grid c2">
+    <div class="card risk"><b>A aposta que carrega tudo</b><p>O dono precisa <b>encaminhar as mensagens</b>. Se ele não encaminhar, não existe dado de cliente no canal WhatsApp — e metade do produto seca. Por isso o v0 existe: é um teste barato dessa única hipótese, com régua explícita (≥90% de captura) e coragem combinada de repensar se falhar.</p></div>
+    <div class="card risk"><b>O que o sistema NÃO promete</b><p>Não opera a cozinha, não roteiriza entregas, não automatiza mensagem para cliente (proibido por design — risco de ban), não substitui contador. E um DRE dos primeiros meses virá com lacunas — mostradas na cara, nunca escondidas: <i>número parcial declarado vale mais que número bonito inventado</i>.</p></div>
+  </div>
+
+  <h2>6 · O que já está escrito (tudo spec, zero código)</h2>
+  <table class="files">
+    <tr><th>Arquivo</th><th>O que é</th><th>Status</th></tr>
+    <tr><td>discovery.md</td><td>Diário da descoberta — suas palavras, decisões e porquês</td><td><span class="tag ok">vivo</span></td></tr>
+    <tr><td>prd.md</td><td>PRD: visão, 7 módulos, princípios, riscos, critérios de sucesso</td><td><span class="tag ok">v1.0 aprovado</span></td></tr>
+    <tr><td>architecture.md</td><td>Arquitetura: 2 repos desacoplados, Railway, WhatsApp Cloud API, custos</td><td><span class="tag ok">v0.2</span></td></tr>
+    <tr><td>specs/data-model.md</td><td>O coração: ~25 entidades, versionamento temporal, proveniência</td><td><span class="tag ok">v1.0 aprovado</span></td></tr>
+    <tr><td>specs/api-contract-v0.md</td><td>O contrato congelado entre back e front (base do OpenAPI)</td><td><span class="tag ok">v1.0</span></td></tr>
+    <tr><td>specs/v0-capture-ledger.md</td><td>O robô por dentro: parsing, matching, fila de revisão, critérios de aceite</td><td><span class="tag ok">v1.0</span></td></tr>
+    <tr><td>specs/v0-frontend.md</td><td>O painel v0, página por página, construível em paralelo</td><td><span class="tag ok">v1.0</span></td></tr>
+    <tr><td>specs/v1-costs-dre.md</td><td>Calculadora + regras normativas do DRE + alertas de margem</td><td><span class="tag ok">v1.0</span></td></tr>
+    <tr><td>specs/v2-crm-actions.md</td><td>Segmentos, lista de reconquista, medição de conversão</td><td><span class="tag ok">v1.0</span></td></tr>
+  </table>
+
+  <h2>7 · O argumento final</h2>
+  <p class="big">Este sistema não pede que o negócio mude. Ele pede um encaminhamento e uma foto.</p>
+  <p>Em troca, devolve o que hoje não existe a preço nenhum: <b>saber quanto custa uma coxinha de verdade</b>, saber quanto sobrou no mês, saber que a dona Maria — que pedia toda semana — sumiu há vinte dias, e ter a mensagem pronta para trazê-la de volta. Cada decisão de design que você deu virou fundação: genérico no banco, desacoplado nos repos, dados como coração, orçamento de padaria. E onde há risco, ele tem nome, régua e plano B escrito.</p>
+  <p>O caderninho continua existindo se eles quiserem. A diferença é que, pela primeira vez, alguém vai poder responder — com prova, centavo por centavo — a pergunta que todo negócio de família carrega calada: <b>"tá valendo a pena?"</b></p>
+  <p>É isso que você pediu. Está tudo especificado, esperando o primeiro <code>git init</code>.</p>
+
+  <footer>Gerado em 04/07/2026 · PRD + specs em <code>~/dev/ddd</code> · nome do produto: ainda em aberto 🙂</footer>
+</div>
+</body>
+</html>
